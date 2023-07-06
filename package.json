@@ -1,0 +1,18 @@
+{
+  "name": "demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel index.html"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dat.gui": "^0.7.9",
+    "gsap": "^3.5.1",
+    "lil-gui": "^0.17.0",
+    "parcel": "^2.8.0",
+    "three": "^0.146.0"
+  }
+}
