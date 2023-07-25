@@ -10,7 +10,6 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement)
 
 camera.position.z=3;
-camera.position.y=2;
 
 
 const orbit = new OrbitControls(camera, renderer.domElement);
