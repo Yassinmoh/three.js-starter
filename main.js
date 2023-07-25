@@ -1,82 +1,55 @@
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
-import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import * as dat from 'lil-gui'
-
-/**
- * Base
- */
-// Debug
-const gui = new dat.GUI()
-
-// Canvas
-const canvas = document.querySelector('canvas.webgl')
-
-// Scene
+const renderer = new THREE.WebGLRenderer();
 const scene = new THREE.Scene()
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
 
 
-/**
- * Sizes
- */
-const sizes = {
-    width: window.innerWidth,
-    height: window.innerHeight
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement)
+
+camera.position.z=3;
+
+
+const orbit = new OrbitControls(camera, renderer.domElement);
+orbit.update();
+
+const material =new THREE.MeshDepthMaterial()
+
+const sphere = new THREE.Mesh(
+    new THREE.SphereGeometry(0.5,16,16),
+    material
+)
+
+sphere.position.x= -1.5
+
+scene.add(sphere)
+
+const clock =new THREE.Clock()
+function animate() {
+    const eltime =clock.getElapsedTime()
+
+    sphere.rotation.y= 0.1 *eltime
+    sphere.rotation.x= 0.15 *eltime
+    
+    requestAnimationFrame(animate)
+    renderer.render(scene, camera);
 }
+animate()
 
-window.addEventListener('resize', () =>
-{
-    // Update sizes
-    sizes.width = window.innerWidth
-    sizes.height = window.innerHeight
-
-    // Update camera
-    camera.aspect = sizes.width / sizes.height
+window.addEventListener('resize', function () {
+    camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix()
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
 
-    // Update renderer
-    renderer.setSize(sizes.width, sizes.height)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+//handle full screen
+window.addEventListener("dblclick",()=>{
+    if(!document.fullscreenElement){
+        document.body.requestFullscreen()
+    }else{
+        document.exitFullscreen()
+    }
 })
-
-/**
- * Camera
- */
-// Base camera
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.z = 3
-scene.add(camera)
-
-// Controls
-const controls = new OrbitControls(camera, canvas)
-controls.enableDamping = true
-
-/**
- * Renderer
- */
-const renderer = new THREE.WebGLRenderer({
-    canvas: canvas
-})
-renderer.setSize(sizes.width, sizes.height)
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-
-/**
- * Animate
- */
-const clock = new THREE.Clock()
-
-const tick = () =>
-{
-    const elapsedTime = clock.getElapsedTime()
-
-    // Update controls
-    controls.update()
-
-    // Render
-    renderer.render(scene, camera)
-
-    // Call tick again on the next frame
-    window.requestAnimationFrame(tick)
-}
-
-tick()
